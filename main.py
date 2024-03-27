@@ -1,11 +1,27 @@
-from model import image
-from model import image_processor
+
+#import the image and image processing from model folder
+from model.image_ import Image
+from model.image_processor import imageProcessor
 import cv2
+import numpy as np
 
-processor = image_processor
+#initialize the image object
 
-image_obj = image(data = cv2.imread('image.jpg'), width = 500, height = 500)
+def main():
+    # Create an instance of ImageProcessor
+    processor = imageProcessor()
 
-result = processor.apply_canny(image_obj, kernel_size=5, low_threshold=50, high_threshold=150)
+    # Load an image
+    image_obj = Image(data=cv2.imread('cat.jpg'), width=500, height=500)
 
-cv2.imshow('Canny Edge Detection', result)
+    # Apply Canny edge detection using the ImageProcessor
+    result = processor.apply_canny(image_obj, kernel_size=2, low_threshold=20, high_threshold=100)
+
+    # Display the resulting image
+    cv2.imshow("Canny Image", result.astype(np.uint8))
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    main()

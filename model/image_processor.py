@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import image
+import model.image_ as image_
 
 class imageProcessor:
     def __init__(self):
