@@ -31,14 +31,25 @@ class Controller:
         self.ui.display_initial_image(self.image.data)
 
     def update_kernel(self, text):
-        self.kernel_size = int(text)
+        try:
+            self.kernel_size = int(text)
+        except ValueError as e:
+            print("Error: ", e)
+            return
 
     def update_low_threshold(self, text):
-        self.low_threshold = int(text)
+        try: 
+            self.low_threshold = int(text)
+        except ValueError as e:
+            print("Error: ", e)
+            return
 
     def update_high_threshold(self, text):
-        self.high_threshold = int(text)
-
+        try:
+            self.high_threshold = int(text)
+        except ValueError as e:
+            print("Error: ", e)
+            return
 
     def apply_canny(self):
         # Reset the copy image
