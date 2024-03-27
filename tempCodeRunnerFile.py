@@ -1,2 +1,1 @@
-
-def main():
+self.image.resize(800, 600) 

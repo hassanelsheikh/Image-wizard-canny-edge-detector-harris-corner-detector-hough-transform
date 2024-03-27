@@ -3,9 +3,6 @@ import numpy as np
 import model.image_ as image_
 
 class imageProcessor:
-    def __init__(self):
-        pass
-
     def apply_canny(self, image, kernel_size=5, low_threshold=50, high_threshold=150):
         # Step 1: Convert image to grayscale
         image.convertToGray()
@@ -22,4 +19,6 @@ class imageProcessor:
         # Step 5: Perform hysteresis
         image.hysteresis()
 
-        return image.data        
+        return image.copyImage
+
+               
