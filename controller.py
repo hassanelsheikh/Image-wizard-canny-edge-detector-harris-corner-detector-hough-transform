@@ -41,6 +41,12 @@ class Controller:
 
 
     def apply_canny(self):
-        self.image.copyImage = self.processor.apply_canny(self.image, self.kernel_size, self.low_threshold, self.high_threshold)
-        print("Canny edge detector applied")
-        self.ui.display_result_image(self.image.copyImage)
+        # Reset the copy image
+        self.image.copyImage = self.image.data.copy()
+        try:
+            self.image.copyImage = self.processor.apply_canny(self.image, self.kernel_size, self.low_threshold, self.high_threshold)
+            print("Canny edge detector applied")
+            self.ui.display_result_image(self.image.copyImage)
+        except AttributeError as e:
+            print("Error: ", e)
+            return

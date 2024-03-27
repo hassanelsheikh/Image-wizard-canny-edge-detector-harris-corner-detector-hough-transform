@@ -120,6 +120,10 @@ class Ui_MainWindow(object):
         self.after.show()
         self.after.fitInView(pixmap_item)
 
+    def clear_result_image(self):
+        self.after.setScene(None)
+        self.after.show()
+
 
 
 if __name__ == "__main__":

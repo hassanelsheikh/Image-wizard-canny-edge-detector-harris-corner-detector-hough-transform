@@ -1,1 +1,2 @@
-self.image.resize(800, 600) 
+
+if __name__ == "__main__":
