@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets
 from view.main_window import Ui_MainWindow
-from controller import Controller
+from controller.controller import Controller
 import sys
 
 if __name__ == "__main__":
