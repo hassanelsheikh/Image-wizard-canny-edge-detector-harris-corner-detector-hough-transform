@@ -11,7 +11,10 @@ class imageProcessor:
         image.gaussianBlur(kernel_size)
 
         # Step 3: Compute gradient intensity
-        image.gradientIntensity()
+        gradient_mag, gradient_dir = image.gradientIntensity()
+
+        # Step 4: Perform non-maximum suppression
+        image.copyImage  = image.nonMaxSuppression(gradient_mag, gradient_dir)
 
         # Step 4: Perform double thresholding
         image.doubleThreshold(low_threshold, high_threshold)

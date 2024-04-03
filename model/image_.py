@@ -48,15 +48,35 @@ class Image:
         gradient_y = cv2.filter2D(self.copyImage, -1, kernel_y)
 
         # Compute the gradient intensity
-        gradient_intensity = np.sqrt(gradient_x ** 2 + gradient_y ** 2)
+        gradient_magnitude = np.sqrt(gradient_x ** 2 + gradient_y ** 2)
 
         # Normalize the gradient intensity
-        gradient_intensity = (gradient_intensity / gradient_intensity.max() * 255).astype(np.uint8)
+        gradient_magnitude = (gradient_magnitude / gradient_magnitude.max() * 255).astype(np.uint8)
 
-        self.copyImage = gradient_intensity
+        #gradient_direction
+        gradient_direction = np.arctan2(gradient_y, gradient_x)
+
+        return gradient_magnitude, gradient_direction
+    
+    def nonMaxSuppression(self, gradient_magnitude, gradient_direction):
+        suppressed_image = np.zeros_like(gradient_magnitude)
+        for i in range(1, self.height - 1):
+            for j in range(1, self.width - 1):
+                direction = gradient_direction[i, j]
+                if (0 <= direction < np.pi / 4) or (7 * np.pi / 4 <= direction < 2 * np.pi):
+                    neighbors = [gradient_magnitude[i, j - 1], gradient_magnitude[i, j + 1]]
+                elif (np.pi / 4 <= direction < 3 * np.pi / 4):
+                    neighbors = [gradient_magnitude[i - 1, j + 1], gradient_magnitude[i + 1, j - 1]]
+                elif (3 * np.pi / 4 <= direction < 5 * np.pi / 4):
+                    neighbors = [gradient_magnitude[i - 1, j], gradient_magnitude[i + 1, j]]
+                else:
+                    neighbors = [gradient_magnitude[i - 1, j - 1], gradient_magnitude[i + 1, j + 1]]
+                if gradient_magnitude[i, j] >= max(neighbors):
+                    suppressed_image[i, j] = gradient_magnitude[i, j]
+        return suppressed_image
+
     def threshold(self, threshold):
         self.copyImage = np.where(self.copyImage > threshold, self.copyImage, 0)
-
     
     def doubleThreshold(self, lowThreshold, highThreshold):
         self.strongEdges = np.where(self.copyImage > highThreshold, self.copyImage, 0)
