@@ -3,7 +3,7 @@ import numpy as np
 import model.image_ as image_
 
 class imageProcessor:
-    def apply_canny(self, image, kernel_size=5, low_threshold=50, high_threshold=150):
+    def apply_canny(self, image, kernel_size, low_threshold, high_threshold):
         # Step 1: Convert image to grayscale
         image.convertToGray()
 
