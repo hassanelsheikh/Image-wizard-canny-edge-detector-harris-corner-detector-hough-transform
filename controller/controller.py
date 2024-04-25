@@ -15,13 +15,42 @@ class Controller:
         self.processor = imageProcessor()
         
         # Connect signals to slots
-        self.ui.pushButton.clicked.connect(self.apply_canny)
-        self.ui.pushButton_2.clicked.connect(self.browse_image)
+        self.ui.applyCannyButton.clicked.connect(self.apply_canny)
+        self.ui.applyHoughButton.clicked.connect(self.apply_hough)
+        self.ui.applyHarrisButton.clicked.connect(self.apply_harris)
 
        # Connect input fields to slots
         self.ui.kernelLineEdit.textChanged.connect(self.update_kernel)
         self.ui.lowThresholdLineEdit.textChanged.connect(self.update_low_threshold)
-        self.ui.highThresholdLineEdit.textChanged.connect(self.update_high_threshold)      
+        self.ui.highThresholdLineEdit.textChanged.connect(self.update_high_threshold)    
+
+        # Initialize detection mode
+        self.detection_mode = "Canny Edge Detection"
+        
+ 
+    def update_detection_mode(self, mode):
+        self.detection_mode = mode
+        print(f"Detection mode updated to {mode}")
+
+    def apply_detection(self):
+        if self.detection_mode == "Canny Edge Detection":
+            self.apply_canny()
+        elif self.detection_mode == "Hough Line Detection":
+            self.apply_hough()
+        elif self.detection_mode == "Harris Corner Detection":
+            self.apply_harris()
+
+    def apply_hough(self):
+        rho = float(self.ui.rhoLineEdit.text())
+        theta = float(self.ui.thetaLineEdit.text()) * (np.pi / 180)
+        threshold = int(self.ui.houghThresholdLineEdit.text())
+        self.image.data = self.processor.apply_hough(self.image, rho, theta, threshold)
+        self.ui.display_result_image(self.image.data)
+
+    def apply_harris(self):
+         threshold = float(self.ui.harrisThresholdLineEdit.text())
+         self.image.data = self.processor.apply_harris(self.image, threshold)
+         self.ui.display_result_image(self.image.data)
 
     def browse_image(self):
         path = QtWidgets.QFileDialog.getOpenFileName(None, 'Open file', '', 'Image files (*.jpg *.png)')[0]

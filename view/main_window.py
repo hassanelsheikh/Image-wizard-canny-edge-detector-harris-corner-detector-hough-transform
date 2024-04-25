@@ -20,105 +20,195 @@ class Ui_MainWindow(object):
         MainWindow.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(350, 360, 75, 23))
-        self.pushButton.setObjectName("pushButton")
-        self.Before = QtWidgets.QGraphicsView(self.centralwidget)
-        self.Before.setGeometry(QtCore.QRect(90, 130, 256, 192))
-        self.Before.setObjectName("Before")
-        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(340, 80, 75, 23))
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.after = QtWidgets.QGraphicsView(self.centralwidget)
-        self.after.setGeometry(QtCore.QRect(420, 130, 256, 192))
-        self.after.setObjectName("after")
-        self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit.setGeometry(QtCore.QRect(170, 110, 71, 20))
-        self.lineEdit.setObjectName("lineEdit")
-        self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit_2.setGeometry(QtCore.QRect(520, 110, 41, 20))
-        self.lineEdit_2.setObjectName("lineEdit_2")
-        self.kernelLineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.kernelLineEdit.setGeometry(QtCore.QRect(100, 420, 51, 20))
-        self.kernelLineEdit.setObjectName("kernelLineEdit")
-        self.lowThresholdLineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lowThresholdLineEdit.setGeometry(QtCore.QRect(100, 450, 51, 20))
-        self.lowThresholdLineEdit.setObjectName("lowThresholdLineEdit")
-        self.highThresholdLineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.highThresholdLineEdit.setGeometry(QtCore.QRect(100, 480, 51, 20))
-        self.highThresholdLineEdit.setObjectName("highThresholdLineEdit")
-              # Labels for input fields
-        self.kernelLabel = QtWidgets.QLabel(self.centralwidget)
-        self.kernelLabel.setGeometry(QtCore.QRect(20, 420, 71, 16))
-        self.kernelLabel.setObjectName("kernelLabel")
-        self.kernelLabel.setText("Kernel:")
-        
-        self.lowThresholdLabel = QtWidgets.QLabel(self.centralwidget)
-        self.lowThresholdLabel.setGeometry(QtCore.QRect(20, 450, 71, 16))
-        self.lowThresholdLabel.setObjectName("lowThresholdLabel")
-        self.lowThresholdLabel.setText("Low Threshold:")
-        
-        self.highThresholdLabel = QtWidgets.QLabel(self.centralwidget)
-        self.highThresholdLabel.setGeometry(QtCore.QRect(20, 480, 71, 16))
-        self.highThresholdLabel.setObjectName("highThresholdLabel")
-        self.highThresholdLabel.setText("High Threshold:")
-        
+
+        # Setup tab widget
+        self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
+        self.tabWidget.setGeometry(QtCore.QRect(10, 10, 780, 580))
+        self.tabWidget.setObjectName("tabWidget")
+
+        # Tab for Canny Edge Detection
+        self.tabCanny = QtWidgets.QWidget()
+        self.tabCanny.setObjectName("tabCanny")
+        self.setupCannyTab(self.tabCanny)
+        self.tabWidget.addTab(self.tabCanny, "Canny Edge Detection")
+
+        # Tab for Hough Line Detection
+        self.tabHough = QtWidgets.QWidget()
+        self.tabHough.setObjectName("tabHough")
+        self.setupHoughTab(self.tabHough)
+        self.tabWidget.addTab(self.tabHough, "Hough Line Detection")
+
+        # Tab for Harris Corner Detection
+        self.tabHarris = QtWidgets.QWidget()
+        self.tabHarris.setObjectName("tabHarris")
+        self.setupHarrisTab(self.tabHarris)
+        self.tabWidget.addTab(self.tabHarris, "Harris Corner Detection")
+
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
-        self.menubar.setObjectName("menubar")
-        self.menuCanny_edge_detector = QtWidgets.QMenu(self.menubar)
-        self.menuCanny_edge_detector.setObjectName("menuCanny_edge_detector")
-        MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.menubar.addAction(self.menuCanny_edge_detector.menuAction())
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+    def setupCannyTab(self, tab):
+     # Set up a vertical layout for the tab
+        tab.layout = QtWidgets.QVBoxLayout(tab)
 
+        # Form layout for input fields
+        formLayout = QtWidgets.QFormLayout()
+
+        # Kernel size input
+        self.kernelLineEdit = QtWidgets.QLineEdit(tab)
+        self.kernelLabel = QtWidgets.QLabel("Kernel Size:", tab)
+        formLayout.addRow(self.kernelLabel, self.kernelLineEdit)
+
+        # Low threshold input
+        self.lowThresholdLineEdit = QtWidgets.QLineEdit(tab)
+        self.lowThresholdLabel = QtWidgets.QLabel("Low Threshold:", tab)
+        formLayout.addRow(self.lowThresholdLabel, self.lowThresholdLineEdit)
+
+        # High threshold input
+        self.highThresholdLineEdit = QtWidgets.QLineEdit(tab)
+        self.highThresholdLabel = QtWidgets.QLabel("High Threshold:", tab)
+        formLayout.addRow(self.highThresholdLabel, self.highThresholdLineEdit)
+
+        # Graphics View for displaying the initial and processed images
+        self.cannyGraphicsView = QtWidgets.QGraphicsView(tab)
+
+        # Button to apply Canny edge detection
+        self.applyCannyButton = QtWidgets.QPushButton("Apply Canny Detection", tab)
+
+        # Adding widgets to the layout
+        tab.layout.addLayout(formLayout)
+        tab.layout.addWidget(self.cannyGraphicsView)
+        tab.layout.addWidget(self.applyCannyButton)
+
+    def setupHoughTab(self, tab):
+        tab.layout = QtWidgets.QVBoxLayout(tab)
+        
+        # Controls for rho, theta, and threshold
+        self.rhoLineEdit = QtWidgets.QLineEdit(tab)
+        self.thetaLineEdit = QtWidgets.QLineEdit(tab)
+        self.houghThresholdLineEdit = QtWidgets.QLineEdit(tab)
+        
+        # Labels
+        self.rhoLabel = QtWidgets.QLabel("Rho (resolution):", tab)
+        self.thetaLabel = QtWidgets.QLabel("Theta (resolution in degrees):", tab)
+        self.houghThresholdLabel = QtWidgets.QLabel("Threshold:", tab)
+        
+        # Set layout for labels and line edits
+        formLayout = QtWidgets.QFormLayout()
+        formLayout.addRow(self.rhoLabel, self.rhoLineEdit)
+        formLayout.addRow(self.thetaLabel, self.thetaLineEdit)
+        formLayout.addRow(self.houghThresholdLabel, self.houghThresholdLineEdit)
+        
+        # Graphics View for displaying images
+        self.houghGraphicsView = QtWidgets.QGraphicsView(tab)
+        
+        # Button to apply Hough transformation
+        self.applyHoughButton = QtWidgets.QPushButton("Apply Hough Detection", tab)
+        
+        # Add all to the tab's layout
+        tab.layout.addLayout(formLayout)
+        tab.layout.addWidget(self.houghGraphicsView)
+        tab.layout.addWidget(self.applyHoughButton)
+    def setupHarrisTab(self, tab):
+        tab.layout = QtWidgets.QVBoxLayout(tab)
+        
+        # Control for threshold
+        self.harrisThresholdLineEdit = QtWidgets.QLineEdit(tab)
+        
+        # Label
+        self.harrisThresholdLabel = QtWidgets.QLabel("Corner Response Threshold:", tab)
+        
+        # Set layout for label and line edit
+        formLayout = QtWidgets.QFormLayout()
+        formLayout.addRow(self.harrisThresholdLabel, self.harrisThresholdLineEdit)
+        
+        # Graphics View for displaying images
+        self.harrisGraphicsView = QtWidgets.QGraphicsView(tab)
+        
+        # Button to apply Harris Corner detection
+        self.applyHarrisButton = QtWidgets.QPushButton("Apply Harris Detection", tab)
+        
+        # Add all to the tab's layout
+        tab.layout.addLayout(formLayout)
+        tab.layout.addWidget(self.harrisGraphicsView)
+        tab.layout.addWidget(self.applyHarrisButton)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.pushButton.setText(_translate("MainWindow", "Apply "))
-        self.pushButton_2.setText(_translate("MainWindow", "Browse image"))
-        self.lineEdit.setText(_translate("MainWindow", "Initial image"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Image Processing Application"))
+        self.pushButton.setText(_translate("MainWindow", "Apply"))
+        self.pushButton_2.setText(_translate("MainWindow", "Browse Image"))
+        self.lineEdit.setText(_translate("MainWindow", "Initial Image"))
         self.lineEdit_2.setText(_translate("MainWindow", "Result"))
-        self.menuCanny_edge_detector.setTitle(_translate("MainWindow", "Canny edge detector"))
+
+        # Update tab widget titles
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabCanny), _translate("MainWindow", "Canny Edge Detection"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabHough), _translate("MainWindow", "Hough Line Detection"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tabHarris), _translate("MainWindow", "Harris Corner Detection"))
+
+        # Update labels and buttons within each tab
+        self.kernelLabel.setText(_translate("MainWindow", "Kernel Size:"))
+        self.lowThresholdLabel.setText(_translate("MainWindow", "Low Threshold:"))
+        self.highThresholdLabel.setText(_translate("MainWindow", "High Threshold:"))
+        self.applyCannyButton.setText(_translate("MainWindow", "Apply Canny Detection"))
+
+        self.rhoLabel.setText(_translate("MainWindow", "Rho (resolution):"))
+        self.thetaLabel.setText(_translate("MainWindow", "Theta (resolution in degrees):"))
+        self.houghThresholdLabel.setText(_translate("MainWindow", "Hough Threshold:"))
+        self.applyHoughButton.setText(_translate("MainWindow", "Apply Hough Detection"))
+
+        self.harrisThresholdLabel.setText(_translate("MainWindow", "Corner Response Threshold:"))
+        self.applyHarrisButton.setText(_translate("MainWindow", "Apply Harris Detection"))
+
+        # If you have a menu that needs updating
+        self.menuCanny_edge_detector.setTitle(_translate("MainWindow", "Options"))
+
 
     def display_initial_image(self, image_data):
-        qimage = QImage(image_data.data, image_data.shape[1], image_data.shape[0], 
-                        QImage.Format_RGB888).rgbSwapped()
-
-        # Convert QImage to QPixmap
+        qimage = QImage(image_data.data, image_data.shape[1], image_data.shape[0], QImage.Format_RGB888).rgbSwapped()
         pixmap = QPixmap.fromImage(qimage)
-
-        # Create a QGraphicsScene
         scene = QtWidgets.QGraphicsScene()
+        scene.addPixmap(pixmap)
 
-        # Add the QPixmap to QGraphicsScene as QGraphicsPixmapItem
-        pixmap_item = QtWidgets.QGraphicsPixmapItem(pixmap)
-        scene.addItem(pixmap_item)
-
-        # Set QGraphicsScene to QGraphicsView
-        self.Before.setScene(scene)
-        self.Before.fitInView(pixmap_item)
+        # Determine which tab is active
+        if self.tabWidget.currentIndex() == 0:  # Assuming Canny tab index is 0
+           self.Before.setScene(scene)  # 'Before' is the QGraphicsView for the Canny tab
+           self.Before.fitInView(scene.itemsBoundingRect(), QtCore.Qt.KeepAspectRatio)
+        elif self.tabWidget.currentIndex() == 1:  # Hough tab
+             self.houghGraphicsView.setScene(scene)
+             self.houghGraphicsView.fitInView(scene.itemsBoundingRect(), QtCore.Qt.KeepAspectRatio)
+        elif self.tabWidget.currentIndex() == 2:  # Harris tab
+             self.harrisGraphicsView.setScene(scene)
+             self.harrisGraphicsView.fitInView(scene.itemsBoundingRect(), QtCore.Qt.KeepAspectRatio)
 
     def display_result_image(self, image_data):
-        # the image is grayscale
-        qimage = QImage(image_data.data, image_data.shape[1], image_data.shape[0], 
-                        QImage.Format_Grayscale8)
+        # Assume image_data is a numpy array coming from cv2 processing
+        # Check the number of channels to determine how to convert to QImage
+        if len(image_data.shape) == 3:  # Color image
+            qimage = QImage(image_data.data, image_data.shape[1], image_data.shape[0],
+                            image_data.strides[0], QImage.Format_RGB888).rgbSwapped()
+        else:  # Grayscale image
+            qimage = QImage(image_data.data, image_data.shape[1], image_data.shape[0],
+                            image_data.strides[0], QImage.Format_Grayscale8)
 
-        #Display in the after QGraphicsView
         pixmap = QPixmap.fromImage(qimage)
         scene = QtWidgets.QGraphicsScene()
-        pixmap_item = QtWidgets.QGraphicsPixmapItem(pixmap)
-        scene.addItem(pixmap_item)
-        self.after.setScene(scene)
-        self.after.show()
-        self.after.fitInView(pixmap_item)
+        scene.addPixmap(pixmap)
+
+        # Determine which tab is active to display the image in the correct QGraphicsView
+        current_tab_index = self.tabWidget.currentIndex()
+        if current_tab_index == 0:  # Canny tab
+            self.cannyGraphicsView.setScene(scene)
+            self.cannyGraphicsView.fitInView(scene.itemsBoundingRect(), QtCore.Qt.KeepAspectRatio)
+        elif current_tab_index == 1:  # Hough tab
+            self.houghGraphicsView.setScene(scene)
+            self.houghGraphicsView.fitInView(scene.itemsBoundingRect(), QtCore.Qt.KeepAspectRatio)
+        elif current_tab_index == 2:  # Harris tab
+            self.harrisGraphicsView.setScene(scene)
+            self.harrisGraphicsView.fitInView(scene.itemsBoundingRect(), QtCore.Qt.KeepAspectRatio)
+
 
     def clear_result_image(self):
         self.after.setScene(None)

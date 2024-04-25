@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
@@ -11,80 +10,268 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Image Processing Application</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>360</y>
-      <width>75</width>
-      <height>23</height>
+      <x>10</x>
+      <y>10</y>
+      <width>780</width>
+      <height>580</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Apply </string>
-    </property>
-   </widget>
-   <widget class="QGraphicsView" name="Before">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>130</y>
-      <width>256</width>
-      <height>192</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_2">
-    <property name="geometry">
-     <rect>
-      <x>340</x>
-      <y>80</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Browse image</string>
-    </property>
-   </widget>
-   <widget class="QGraphicsView" name="after">
-    <property name="geometry">
-     <rect>
-      <x>420</x>
-      <y>130</y>
-      <width>256</width>
-      <height>192</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>110</y>
-      <width>71</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Initial image</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_2">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>110</y>
-      <width>41</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Result</string>
-    </property>
+    <widget class="QWidget" name="tabCanny">
+     <attribute name="title">
+      <string>Canny Edge Detection</string>
+     </attribute>
+     <!-- Widgets for Canny Edge Detection -->
+     <widget class="QPushButton" name="applyCannyButton">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>520</y>
+        <width>160</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Apply Canny Detection</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="kernelLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>10</y>
+        <width>60</width>
+        <height>25</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lowThresholdLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>40</y>
+        <width>60</width>
+        <height>25</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="highThresholdLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>70</y>
+        <width>60</width>
+        <height>25</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="kernelLabel">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>130</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Kernel Size:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lowThresholdLabel">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>130</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Low Threshold:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="highThresholdLabel">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>130</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>High Threshold:</string>
+      </property>
+     </widget>
+     <widget class="QGraphicsView" name="cannyGraphicsView">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>10</y>
+        <width>550</width>
+        <height>500</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tabHough">
+ <attribute name="title">
+  <string>Hough Line Detection</string>
+ </attribute>
+ <!-- Widgets for Hough Line Detection -->
+ <widget class="QPushButton" name="applyHoughButton">
+  <property name="geometry">
+   <rect>
+    <x>10</x>
+    <y>520</y>
+    <width>160</width>
+    <height>30</height>
+   </rect>
+  </property>
+  <property name="text">
+   <string>Apply Hough Detection</string>
+  </property>
+ </widget>
+ <widget class="QLineEdit" name="rhoLineEdit">
+  <property name="geometry">
+   <rect>
+    <x>150</x>
+    <y>10</y>
+    <width>60</width>
+    <height>25</height>
+   </rect>
+  </property>
+ </widget>
+ <widget class="QLineEdit" name="thetaLineEdit">
+  <property name="geometry">
+   <rect>
+    <x>150</x>
+    <y>40</y>
+    <width>60</width>
+    <height>25</height>
+   </rect>
+  </property>
+ </widget>
+ <widget class="QLineEdit" name="houghThresholdLineEdit">
+  <property name="geometry">
+   <rect>
+    <x>150</x>
+    <y>70</y>
+    <width>60</width>
+    <height>25</height>
+   </rect>
+  </property>
+ </widget>
+ <widget class="QLabel" name="rhoLabel">
+  <property name="geometry">
+   <rect>
+    <x>10</x>
+    <y>10</y>
+    <width>130</width>
+    <height>25</height>
+   </rect>
+  </property>
+  <property name="text">
+   <string>Rho (resolution):</string>
+  </property>
+ </widget>
+ <widget class="QLabel" name="thetaLabel">
+  <property name="geometry">
+   <rect>
+    <x>10</x>
+    <y>40</y>
+    <width>130</width>
+    <height>25</height>
+   </rect>
+  </property>
+  <property name="text">
+   <string>Theta (resolution in degrees):</string>
+  </property>
+ </widget>
+ <widget class="QLabel" name="houghThresholdLabel">
+  <property name="geometry">
+   <rect>
+    <x>10</x>
+    <y>70</y>
+    <width>130</width>
+    <height>25</height>
+   </rect>
+  </property>
+  <property name="text">
+   <string>Hough Threshold:</string>
+  </property>
+ </widget>
+ <widget class="QGraphicsView" name="houghGraphicsView">
+  <property name="geometry">
+   <rect>
+    <x>220</x>
+    <y>10</y>
+    <width>550</width>
+    <height>500</height>
+   </rect>
+  </property>
+ </widget>
+</widget>
+
+    <widget class="QWidget" name="tabHarris">
+ <attribute name="title">
+  <string>Harris Corner Detection</string>
+ </attribute>
+ <!-- Widgets for Harris Corner Detection -->
+ <widget class="QPushButton" name="applyHarrisButton">
+  <property name="geometry">
+   <rect>
+    <x>10</x>
+    <y>520</y>
+    <width>160</width>
+    <height>30</height>
+   </rect>
+  </property>
+  <property name="text">
+   <string>Apply Harris Detection</string>
+  </property>
+ </widget>
+ <widget class="QLineEdit" name="harrisThresholdLineEdit">
+  <property name="geometry">
+   <rect>
+    <x>150</x>
+    <y>10</y>
+    <width>60</width>
+    <height>25</height>
+   </rect>
+  </property>
+ </widget>
+ <widget class="QLabel" name="harrisThresholdLabel">
+  <property name="geometry">
+   <rect>
+    <x>10</x>
+    <y>10</y>
+    <width>130</width>
+    <height>25</height>
+   </rect>
+  </property>
+  <property name="text">
+   <string>Corner Response Threshold:</string>
+  </property>
+ </widget>
+ <widget class="QGraphicsView" name="harrisGraphicsView">
+  <property name="geometry">
+   <rect>
+    <x>220</x>
+    <y>10</y>
+    <width>550</width>
+    <height>500</height>
+   </rect>
+  </property>
+ </widget>
+</widget>
+
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -96,15 +283,14 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuCanny_edge_detector">
+   <widget class="QMenu" name="menuImageProcessing">
     <property name="title">
-     <string>Canny edge detector</string>
+     <string>Options</string>
     </property>
    </widget>
-   <addaction name="menuCanny_edge_detector"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar" />
  </widget>
- <resources/>
- <connections/>
+ <resources />
+ <connections />
 </ui>
