@@ -34,6 +34,7 @@ class Image:
         # Generate Gaussian kernel
         kernel = np.ones((kernel_size, kernel_size), np.float32) / kernel_size**2
         kernel /= kernel_size**2
+        self.copyImage = cv2.GaussianBlur(self.copyImage, (kernel_size, kernel_size), sigma)
         
 
         # Convolve the image with the kernel

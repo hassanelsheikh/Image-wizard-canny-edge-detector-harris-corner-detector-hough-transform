@@ -3,12 +3,12 @@ import numpy as np
 import model.image_ as image_
 
 class imageProcessor:
-    def apply_canny(self, image, kernel_size, low_threshold, high_threshold):
+    def apply_canny(self, image, kernel_size, sigma, low_threshold, high_threshold):
         # Step 1: Convert image to grayscale
         image.convertToGray()
 
         # Step 2: Apply Gaussian blur
-        image.gaussianBlur(kernel_size)
+        image.gaussianBlur(kernel_size, sigma)
 
         # Step 3: Compute gradient intensity
         gradient_mag, gradient_dir = image.gradientIntensity()

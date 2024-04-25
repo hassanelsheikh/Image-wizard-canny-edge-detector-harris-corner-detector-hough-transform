@@ -20,6 +20,11 @@ class Ui_MainWindow(object):
         MainWindow.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        
+        self.central_layout = QtWidgets.QVBoxLayout(self.centralwidget)
+        self.image_layout = QtWidgets.QHBoxLayout()
+        
+        
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(350, 360, 75, 23))
         self.pushButton.setObjectName("pushButton")

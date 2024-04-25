@@ -36,6 +36,14 @@ class Controller:
         except ValueError as e:
             print("Error: ", e)
             return
+        
+    def update_sigma(self, text):
+        try:
+            self.sigma = float(text)
+        except ValueError as e:
+            print("Error: ", e)
+            return
+
 
     def update_low_threshold(self, text):
         try: 
@@ -55,7 +63,7 @@ class Controller:
         # Reset the copy image
         self.image.copyImage = self.image.data.copy()
         try:
-            self.image.copyImage = self.processor.apply_canny(self.image, self.kernel_size, self.low_threshold, self.high_threshold)
+            self.image.copyImage = self.processor.apply_canny(self.image, self.kernel_size, self.sigma, self.low_threshold, self.high_threshold)
             print("Canny edge detector applied")
             self.ui.display_result_image(self.image.copyImage)
         except AttributeError as e:
