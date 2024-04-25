@@ -74,6 +74,16 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.menubar.addAction(self.menuCanny_edge_detector.menuAction())
+        
+        self.sigmaLineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.sigmaLineEdit.setGeometry(QtCore.QRect(100, 510, 51, 20))
+        self.sigmaLineEdit.setObjectName("sigmaLineEdit")
+
+        # Add a new QLabel for the sigma value
+        self.sigmaLabel = QtWidgets.QLabel(self.centralwidget)
+        self.sigmaLabel.setGeometry(QtCore.QRect(20, 510, 71, 16))
+        self.sigmaLabel.setObjectName("sigmaLabel")
+        self.sigmaLabel.setText("Sigma:")
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -87,6 +97,7 @@ class Ui_MainWindow(object):
         self.lineEdit.setText(_translate("MainWindow", "Initial image"))
         self.lineEdit_2.setText(_translate("MainWindow", "Result"))
         self.menuCanny_edge_detector.setTitle(_translate("MainWindow", "Canny edge detector"))
+        self.sigmaLabel.setText(_translate("MainWindow", "Sigma"))
 
     def display_initial_image(self, image_data):
         qimage = QImage(image_data.data, image_data.shape[1], image_data.shape[0], 

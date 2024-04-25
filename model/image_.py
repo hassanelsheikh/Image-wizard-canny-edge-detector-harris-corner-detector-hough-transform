@@ -30,10 +30,11 @@ class Image:
     def convertToGray(self):
         self.copyImage = cv2.cvtColor(self.copyImage, cv2.COLOR_BGR2GRAY)
 
-    def gaussianBlur(self, kernel_size):
+    def gaussianBlur(self, kernel_size, sigma):
         # Generate Gaussian kernel
         kernel = np.ones((kernel_size, kernel_size), np.float32) / kernel_size**2
         kernel /= kernel_size**2
+        
 
         # Convolve the image with the kernel
         self.copyImage = cv2.filter2D(self.copyImage, -1, kernel)
