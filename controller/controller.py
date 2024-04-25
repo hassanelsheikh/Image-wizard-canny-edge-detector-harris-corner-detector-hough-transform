@@ -21,7 +21,8 @@ class Controller:
        # Connect input fields to slots
         self.ui.kernelLineEdit.textChanged.connect(self.update_kernel)
         self.ui.lowThresholdLineEdit.textChanged.connect(self.update_low_threshold)
-        self.ui.highThresholdLineEdit.textChanged.connect(self.update_high_threshold)      
+        self.ui.highThresholdLineEdit.textChanged.connect(self.update_high_threshold) 
+        self.ui.sigmaLineEdit.textChanged.connect(self.update_sigma)     
 
     def browse_image(self):
         path = QtWidgets.QFileDialog.getOpenFileName(None, 'Open file', '', 'Image files (*.jpg *.png)')[0]

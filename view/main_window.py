@@ -20,92 +20,81 @@ class Ui_MainWindow(object):
         MainWindow.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        
+
+        # Create vertical layout for the central widget
         self.central_layout = QtWidgets.QVBoxLayout(self.centralwidget)
+
+        # Create horizontal layout for image views
         self.image_layout = QtWidgets.QHBoxLayout()
+
+        # Add QGraphicsViews to the image layout
+        self.Before = QtWidgets.QGraphicsView()
+        self.after = QtWidgets.QGraphicsView()
+        self.image_layout.addWidget(self.Before)
+        self.image_layout.addWidget(self.after)
+
+        # Add the image layout to the central layout
+        self.central_layout.addLayout(self.image_layout)
+
+        # Create a grid layout for input fields and buttons
+        self.grid_layout = QtWidgets.QGridLayout()
         
+        # Add labels and line edits to the grid layout
+        self.kernelLabel = QtWidgets.QLabel("Kernel:")
+        self.kernelLineEdit = QtWidgets.QLineEdit()
+        self.lowThresholdLabel = QtWidgets.QLabel("Low Threshold:")
+        self.lowThresholdLineEdit = QtWidgets.QLineEdit()
+        self.highThresholdLabel = QtWidgets.QLabel("High Threshold:")
+        self.highThresholdLineEdit = QtWidgets.QLineEdit()
+        self.sigmaLabel = QtWidgets.QLabel("Sigma:")
+        self.sigmaLineEdit = QtWidgets.QLineEdit()
         
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(350, 360, 75, 23))
-        self.pushButton.setObjectName("pushButton")
-        self.Before = QtWidgets.QGraphicsView(self.centralwidget)
-        self.Before.setGeometry(QtCore.QRect(90, 130, 256, 192))
-        self.Before.setObjectName("Before")
-        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(340, 80, 75, 23))
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.after = QtWidgets.QGraphicsView(self.centralwidget)
-        self.after.setGeometry(QtCore.QRect(420, 130, 256, 192))
-        self.after.setObjectName("after")
-        self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit.setGeometry(QtCore.QRect(170, 110, 71, 20))
-        self.lineEdit.setObjectName("lineEdit")
-        self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit_2.setGeometry(QtCore.QRect(520, 110, 41, 20))
-        self.lineEdit_2.setObjectName("lineEdit_2")
-        self.kernelLineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.kernelLineEdit.setGeometry(QtCore.QRect(100, 420, 51, 20))
-        self.kernelLineEdit.setObjectName("kernelLineEdit")
-        self.lowThresholdLineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lowThresholdLineEdit.setGeometry(QtCore.QRect(100, 450, 51, 20))
-        self.lowThresholdLineEdit.setObjectName("lowThresholdLineEdit")
-        self.highThresholdLineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.highThresholdLineEdit.setGeometry(QtCore.QRect(100, 480, 51, 20))
-        self.highThresholdLineEdit.setObjectName("highThresholdLineEdit")
-              # Labels for input fields
-        self.kernelLabel = QtWidgets.QLabel(self.centralwidget)
-        self.kernelLabel.setGeometry(QtCore.QRect(20, 420, 71, 16))
-        self.kernelLabel.setObjectName("kernelLabel")
-        self.kernelLabel.setText("Kernel:")
-        
-        self.lowThresholdLabel = QtWidgets.QLabel(self.centralwidget)
-        self.lowThresholdLabel.setGeometry(QtCore.QRect(20, 450, 71, 16))
-        self.lowThresholdLabel.setObjectName("lowThresholdLabel")
-        self.lowThresholdLabel.setText("Low Threshold:")
-        
-        self.highThresholdLabel = QtWidgets.QLabel(self.centralwidget)
-        self.highThresholdLabel.setGeometry(QtCore.QRect(20, 480, 71, 16))
-        self.highThresholdLabel.setObjectName("highThresholdLabel")
-        self.highThresholdLabel.setText("High Threshold:")
-        
+        # Add widgets to grid layout
+        self.grid_layout.addWidget(self.kernelLabel, 0, 0)
+        self.grid_layout.addWidget(self.kernelLineEdit, 0, 1)
+        self.grid_layout.addWidget(self.lowThresholdLabel, 1, 0)
+        self.grid_layout.addWidget(self.lowThresholdLineEdit, 1, 1)
+        self.grid_layout.addWidget(self.highThresholdLabel, 2, 0)
+        self.grid_layout.addWidget(self.highThresholdLineEdit, 2, 1)
+        self.grid_layout.addWidget(self.sigmaLabel, 3, 0)
+        self.grid_layout.addWidget(self.sigmaLineEdit, 3, 1)
+
+        # Add buttons to the grid layout
+        self.pushButton = QtWidgets.QPushButton("Apply")
+        self.pushButton_2 = QtWidgets.QPushButton("Browse Image")
+        self.grid_layout.addWidget(self.pushButton, 4, 0)
+        self.grid_layout.addWidget(self.pushButton_2, 4, 1)
+
+        # Add grid layout to central layout
+        self.central_layout.addLayout(self.grid_layout)
+
+        # Set the central widget and the main window
         MainWindow.setCentralWidget(self.centralwidget)
+
+        # Menu and status bar code remain unchanged
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
-        self.menubar.setObjectName("menubar")
-        self.menuCanny_edge_detector = QtWidgets.QMenu(self.menubar)
-        self.menuCanny_edge_detector.setObjectName("menuCanny_edge_detector")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.menuCanny_edge_detector = QtWidgets.QMenu(self.menubar)
         self.menubar.addAction(self.menuCanny_edge_detector.menuAction())
-        
-        self.sigmaLineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.sigmaLineEdit.setGeometry(QtCore.QRect(100, 510, 51, 20))
-        self.sigmaLineEdit.setObjectName("sigmaLineEdit")
-
-        # Add a new QLabel for the sigma value
-        self.sigmaLabel = QtWidgets.QLabel(self.centralwidget)
-        self.sigmaLabel.setGeometry(QtCore.QRect(20, 510, 71, 16))
-        self.sigmaLabel.setObjectName("sigmaLabel")
-        self.sigmaLabel.setText("Sigma:")
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.pushButton.setText(_translate("MainWindow", "Apply "))
-        self.pushButton_2.setText(_translate("MainWindow", "Browse image"))
-        self.lineEdit.setText(_translate("MainWindow", "Initial image"))
-        self.lineEdit_2.setText(_translate("MainWindow", "Result"))
-        self.menuCanny_edge_detector.setTitle(_translate("MainWindow", "Canny edge detector"))
-        self.sigmaLabel.setText(_translate("MainWindow", "Sigma"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Main Window"))
+        self.pushButton.setText(_translate("MainWindow", "Apply"))
+        self.pushButton_2.setText(_translate("MainWindow", "Browse Image"))
+        self.menuCanny_edge_detector.setTitle(_translate("MainWindow", "Canny Edge Detector"))
+        self.kernelLabel.setText(_translate("MainWindow", "Kernel:"))
+        self.lowThresholdLabel.setText(_translate("MainWindow", "Low Threshold:"))
+        self.highThresholdLabel.setText(_translate("MainWindow", "High Threshold:"))
+        self.sigmaLabel.setText(_translate("MainWindow", "Sigma:"))
 
     def display_initial_image(self, image_data):
-        qimage = QImage(image_data.data, image_data.shape[1], image_data.shape[0], 
+        qimage = QImage(image_data.data, image_data.shape[1], image_data.shape[0],
                         QImage.Format_RGB888).rgbSwapped()
 
         # Convert QImage to QPixmap
@@ -123,11 +112,10 @@ class Ui_MainWindow(object):
         self.Before.fitInView(pixmap_item)
 
     def display_result_image(self, image_data):
-        # the image is grayscale
         qimage = QImage(image_data.data, image_data.shape[1], image_data.shape[0], 
                         QImage.Format_Grayscale8)
 
-        #Display in the after QGraphicsView
+        # Display in the after QGraphicsView
         pixmap = QPixmap.fromImage(qimage)
         scene = QtWidgets.QGraphicsScene()
         pixmap_item = QtWidgets.QGraphicsPixmapItem(pixmap)
@@ -139,7 +127,6 @@ class Ui_MainWindow(object):
     def clear_result_image(self):
         self.after.setScene(None)
         self.after.show()
-
 
 
 if __name__ == "__main__":
