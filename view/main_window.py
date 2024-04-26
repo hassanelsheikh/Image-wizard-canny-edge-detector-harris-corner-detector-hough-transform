@@ -77,12 +77,12 @@ class Ui_MainWindow(object):
         # Add buttons to the grid layout
         self.pushButton = QtWidgets.QPushButton("Apply")
         self.pushButton_2 = QtWidgets.QPushButton("Browse Image")
-        
-        self.grid_layout.addWidget(self.pushButton, 4, 0)
-        self.grid_layout.addWidget(self.pushButton_2, 4, 1)
-        self.grid_layout_hough.addWidget(self.pushButton, 3, 0)
-        self.grid_layout_hough.addWidget(self.pushButton_2, 3, 1)
 
+        # Add the Apply button in the next row after the sigma input box
+        self.grid_layout.addWidget(self.pushButton, 4, 0, 1, 2)
+
+        # Add the Browse Image button in the next row after the sigma input box
+        self.grid_layout.addWidget(self.pushButton_2, 5, 0, 1, 2)
         # Add grid layout to the central layout
         self.central_layout.addLayout(self.grid_layout)
 
@@ -189,10 +189,18 @@ class Ui_MainWindow(object):
             
 
     def show_hough_parameters(self):
-        # Remove Canny edge detection parameters and add Hough line detection parameters
-        self.central_layout.removeItem(self.grid_layout)
+        # Remove Apply and Browse Image buttons from the grid layout
+        self.grid_layout.removeWidget(self.pushButton)
+        self.grid_layout.removeWidget(self.pushButton_2)
+
+        # Add Hough line detection parameters layout
         self.central_layout.addLayout(self.grid_layout_hough)
-        
+
+        # Add Apply and Browse Image buttons below the input fields
+        self.central_layout.addWidget(self.pushButton)
+        self.central_layout.addWidget(self.pushButton_2)
+
+        # Hide widgets for Canny edge detection parameters
         self.kernelLabel.setVisible(False)
         self.kernelLineEdit.setVisible(False)
         self.lowThresholdLabel.setVisible(False)
@@ -202,7 +210,7 @@ class Ui_MainWindow(object):
         self.sigmaLabel.setVisible(False)
         self.sigmaLineEdit.setVisible(False)
 
-    # Show widgets for Hough line detection parameters
+        # Show widgets for Hough line detection parameters
         self.rhosLabel.setVisible(True)
         self.rhosLineEdit.setVisible(True)
         self.thetasLabel.setVisible(True)
