@@ -14,30 +14,28 @@ import cv2
 from PyQt5.QtGui import QPixmap
 
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
+        
+        # Central widget
         self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-
-        # Create vertical layout for the central widget
         self.central_layout = QtWidgets.QVBoxLayout(self.centralwidget)
 
-        # Create horizontal layout for image views
+        # Horizontal layout for input and result images
         self.image_layout = QtWidgets.QHBoxLayout()
-
-        # Add QGraphicsViews to the image layout
         self.Before = QtWidgets.QGraphicsView()
         self.after = QtWidgets.QGraphicsView()
         self.image_layout.addWidget(self.Before)
         self.image_layout.addWidget(self.after)
-
-        # Add the image layout to the central layout
         self.central_layout.addLayout(self.image_layout)
 
-        # Create a grid layout for input fields and buttons
+        # Grid layout for input fields and buttons
         self.grid_layout = QtWidgets.QGridLayout()
+        self.grid_layout_hough = QtWidgets.QGridLayout()
+        self.grid_layout_harris = QtWidgets.QGridLayout()
         
         # Add labels and line edits to the grid layout
         self.kernelLabel = QtWidgets.QLabel("Kernel:")
@@ -48,8 +46,8 @@ class Ui_MainWindow(object):
         self.highThresholdLineEdit = QtWidgets.QLineEdit()
         self.sigmaLabel = QtWidgets.QLabel("Sigma:")
         self.sigmaLineEdit = QtWidgets.QLineEdit()
-        
-        # Add widgets to grid layout
+
+        # Add widgets to the grid layout
         self.grid_layout.addWidget(self.kernelLabel, 0, 0)
         self.grid_layout.addWidget(self.kernelLineEdit, 0, 1)
         self.grid_layout.addWidget(self.lowThresholdLabel, 1, 0)
@@ -58,26 +56,59 @@ class Ui_MainWindow(object):
         self.grid_layout.addWidget(self.highThresholdLineEdit, 2, 1)
         self.grid_layout.addWidget(self.sigmaLabel, 3, 0)
         self.grid_layout.addWidget(self.sigmaLineEdit, 3, 1)
+        
+        self.rhosLabel = QtWidgets.QLabel("Rhos:")
+        self.rhosLineEdit = QtWidgets.QLineEdit()
+        self.thetasLabel = QtWidgets.QLabel("Thetas:")
+        self.thetasLineEdit = QtWidgets.QLineEdit()
+        self.thresholdRatioLabel = QtWidgets.QLabel("Threshold Ratio:")
+        self.thresholdRatioLineEdit = QtWidgets.QLineEdit()
+        
+        self.grid_layout_hough.addWidget(self.rhosLabel, 0, 0)
+        self.grid_layout_hough.addWidget(self.rhosLineEdit, 0, 1)
+        self.grid_layout_hough.addWidget(self.thetasLabel, 1, 0)
+        self.grid_layout_hough.addWidget(self.thetasLineEdit, 1, 1)
+        self.grid_layout_hough.addWidget(self.thresholdRatioLabel, 2, 0)
+        self.grid_layout_hough.addWidget(self.thresholdRatioLineEdit, 2, 1)
+        
+        self.central_layout.addLayout(self.grid_layout)
+
 
         # Add buttons to the grid layout
         self.pushButton = QtWidgets.QPushButton("Apply")
         self.pushButton_2 = QtWidgets.QPushButton("Browse Image")
+        
         self.grid_layout.addWidget(self.pushButton, 4, 0)
         self.grid_layout.addWidget(self.pushButton_2, 4, 1)
+        self.grid_layout_hough.addWidget(self.pushButton, 3, 0)
+        self.grid_layout_hough.addWidget(self.pushButton_2, 3, 1)
 
-        # Add grid layout to central layout
+        # Add grid layout to the central layout
         self.central_layout.addLayout(self.grid_layout)
 
-        # Set the central widget and the main window
+        # Set the central widget
         MainWindow.setCentralWidget(self.centralwidget)
 
-        # Menu and status bar code remain unchanged
+        # Create menu bar and add menu items for different programs
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         MainWindow.setMenuBar(self.menubar)
+        self.programs_menu = self.menubar.addMenu("Programs")
+
+        # Create actions for menu items
+        self.action_canny = QtWidgets.QAction("Canny Edge Detection", MainWindow)
+        self.action_hough = QtWidgets.QAction("Hough Line Detection", MainWindow)
+    
+
+        # Add actions to the programs menu
+        self.programs_menu.addAction(self.action_canny)
+        self.programs_menu.addAction(self.action_hough)
+        
+        self.action_canny.triggered.connect(self.show_canny_parameters)
+        self.action_hough.triggered.connect(self.show_hough_parameters)
+
+        # Set status bar
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         MainWindow.setStatusBar(self.statusbar)
-        self.menuCanny_edge_detector = QtWidgets.QMenu(self.menubar)
-        self.menubar.addAction(self.menuCanny_edge_detector.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -87,11 +118,17 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "Main Window"))
         self.pushButton.setText(_translate("MainWindow", "Apply"))
         self.pushButton_2.setText(_translate("MainWindow", "Browse Image"))
-        self.menuCanny_edge_detector.setTitle(_translate("MainWindow", "Canny Edge Detector"))
+        self.programs_menu.setTitle(_translate("MainWindow", "Programs"))
+        self.action_canny.setText(_translate("MainWindow", "Canny Edge Detection"))
+        self.action_hough.setText(_translate("MainWindow", "Hough Line Detection"))
         self.kernelLabel.setText(_translate("MainWindow", "Kernel:"))
         self.lowThresholdLabel.setText(_translate("MainWindow", "Low Threshold:"))
         self.highThresholdLabel.setText(_translate("MainWindow", "High Threshold:"))
         self.sigmaLabel.setText(_translate("MainWindow", "Sigma:"))
+        self.rhosLabel.setText(_translate("MainWindow", "Rhos:"))
+        self.thetasLabel.setText(_translate("MainWindow", "Thetas:"))
+        self.thresholdRatioLabel.setText(_translate("MainWindow", "Threshold Ratio:"))
+
 
     def display_initial_image(self, image_data):
         qimage = QImage(image_data.data, image_data.shape[1], image_data.shape[0],
@@ -109,7 +146,7 @@ class Ui_MainWindow(object):
 
         # Set QGraphicsScene to QGraphicsView
         self.Before.setScene(scene)
-        self.Before.fitInView(pixmap_item)
+        self.Before.fitInView(pixmap_item, QtCore.Qt.KeepAspectRatio)
 
     def display_result_image(self, image_data):
         qimage = QImage(image_data.data, image_data.shape[1], image_data.shape[0], 
@@ -129,6 +166,52 @@ class Ui_MainWindow(object):
         self.after.show()
 
 
+    def show_canny_parameters(self):
+        # Remove Hough line detection parameters and add Canny edge detection parameters
+        self.central_layout.removeItem(self.grid_layout_hough)
+        self.central_layout.addLayout(self.grid_layout)
+        self.kernelLabel.setVisible(True)
+        self.kernelLineEdit.setVisible(True)
+        self.lowThresholdLabel.setVisible(True)
+        self.lowThresholdLineEdit.setVisible(True)
+        self.highThresholdLabel.setVisible(True)
+        self.highThresholdLineEdit.setVisible(True)
+        self.sigmaLabel.setVisible(True)
+        self.sigmaLineEdit.setVisible(True)
+
+    # Hide widgets for Hough line detection parameters
+        self.rhosLabel.setVisible(False)
+        self.rhosLineEdit.setVisible(False)
+        self.thetasLabel.setVisible(False)
+        self.thetasLineEdit.setVisible(False)
+        self.thresholdRatioLabel.setVisible(False)
+        self.thresholdRatioLineEdit.setVisible(False)
+            
+
+    def show_hough_parameters(self):
+        # Remove Canny edge detection parameters and add Hough line detection parameters
+        self.central_layout.removeItem(self.grid_layout)
+        self.central_layout.addLayout(self.grid_layout_hough)
+        
+        self.kernelLabel.setVisible(False)
+        self.kernelLineEdit.setVisible(False)
+        self.lowThresholdLabel.setVisible(False)
+        self.lowThresholdLineEdit.setVisible(False)
+        self.highThresholdLabel.setVisible(False)
+        self.highThresholdLineEdit.setVisible(False)
+        self.sigmaLabel.setVisible(False)
+        self.sigmaLineEdit.setVisible(False)
+
+    # Show widgets for Hough line detection parameters
+        self.rhosLabel.setVisible(True)
+        self.rhosLineEdit.setVisible(True)
+        self.thetasLabel.setVisible(True)
+        self.thetasLineEdit.setVisible(True)
+        self.thresholdRatioLabel.setVisible(True)
+        self.thresholdRatioLineEdit.setVisible(True)
+        
+       
+        
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
