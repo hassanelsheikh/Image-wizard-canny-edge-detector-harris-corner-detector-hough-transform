@@ -20,11 +20,11 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
         
-        # Central widget
+        # Central widget and layout
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.central_layout = QtWidgets.QVBoxLayout(self.centralwidget)
 
-        # Horizontal layout for input and result images
+        # Image display layout
         self.image_layout = QtWidgets.QHBoxLayout()
         self.Before = QtWidgets.QGraphicsView()
         self.after = QtWidgets.QGraphicsView()
@@ -32,12 +32,13 @@ class Ui_MainWindow(object):
         self.image_layout.addWidget(self.after)
         self.central_layout.addLayout(self.image_layout)
 
-        # Grid layout for input fields and buttons
-        self.grid_layout = QtWidgets.QGridLayout()
-        self.grid_layout_hough = QtWidgets.QGridLayout()
-        self.grid_layout_harris = QtWidgets.QGridLayout()
+        # Grid layouts for parameters
+        self.grid_layout = QtWidgets.QGridLayout()  # Canny parameters
+        self.grid_layout_hough = QtWidgets.QGridLayout()  # Hough parameters
+        self.grid_layout_harris = QtWidgets.QGridLayout()  # Harris parameters
         
-        # Add labels and line edits to the grid layout
+        # Define widgets for Canny, Hough, and Harris parameters
+        # Canny parameters
         self.kernelLabel = QtWidgets.QLabel("Kernel:")
         self.kernelLineEdit = QtWidgets.QLineEdit()
         self.lowThresholdLabel = QtWidgets.QLabel("Low Threshold:")
@@ -46,8 +47,7 @@ class Ui_MainWindow(object):
         self.highThresholdLineEdit = QtWidgets.QLineEdit()
         self.sigmaLabel = QtWidgets.QLabel("Sigma:")
         self.sigmaLineEdit = QtWidgets.QLineEdit()
-
-        # Add widgets to the grid layout
+        
         self.grid_layout.addWidget(self.kernelLabel, 0, 0)
         self.grid_layout.addWidget(self.kernelLineEdit, 0, 1)
         self.grid_layout.addWidget(self.lowThresholdLabel, 1, 0)
@@ -57,6 +57,7 @@ class Ui_MainWindow(object):
         self.grid_layout.addWidget(self.sigmaLabel, 3, 0)
         self.grid_layout.addWidget(self.sigmaLineEdit, 3, 1)
         
+        # Hough parameters
         self.rhosLabel = QtWidgets.QLabel("Rhos:")
         self.rhosLineEdit = QtWidgets.QLineEdit()
         self.thetasLabel = QtWidgets.QLabel("Thetas:")
@@ -71,51 +72,61 @@ class Ui_MainWindow(object):
         self.grid_layout_hough.addWidget(self.thresholdRatioLabel, 2, 0)
         self.grid_layout_hough.addWidget(self.thresholdRatioLineEdit, 2, 1)
         
-        self.central_layout.addLayout(self.grid_layout)
-
-
-        # Add buttons to the grid layout
+        # Harris parameters
+        self.windowSizeLabel = QtWidgets.QLabel("Window Size:")
+        self.windowSizeLineEdit = QtWidgets.QLineEdit()
+        self.kLabel = QtWidgets.QLabel("k (sensitivity factor):")
+        self.kLineEdit = QtWidgets.QLineEdit()
+        self.alphaLabel = QtWidgets.QLabel("Alpha (threshold):")
+        self.alphaLineEdit = QtWidgets.QLineEdit()
+        
+        self.grid_layout_harris.addWidget(self.windowSizeLabel, 0, 0)
+        self.grid_layout_harris.addWidget(self.windowSizeLineEdit, 0, 1)
+        self.grid_layout_harris.addWidget(self.kLabel, 1, 0)
+        self.grid_layout_harris.addWidget(self.kLineEdit, 1, 1)
+        self.grid_layout_harris.addWidget(self.alphaLabel, 2, 0)
+        self.grid_layout_harris.addWidget(self.alphaLineEdit, 2, 1)
+        
+        # Buttons
         self.pushButton = QtWidgets.QPushButton("Apply")
         self.pushButton_2 = QtWidgets.QPushButton("Browse Image")
-        self.pushButton_3 = QtWidgets.QPushButton("Apply") 
-
-        # Add the Apply button in the next row after the sigma input box
+        self.pushButton_3 = QtWidgets.QPushButton("Apply")
+        
+        # Add buttons to layouts
         self.grid_layout.addWidget(self.pushButton, 4, 0, 1, 2)
-
-        # Add the Browse Image button in the next row after the sigma input box
         self.grid_layout.addWidget(self.pushButton_2, 5, 0, 1, 2)
-
-        self.grid_layout.addWidget(self.pushButton_2, 5, 0, 1, 2)
-
-# Add Apply button for Hough Transform below the input fields
-        self.central_layout.addWidget(self.pushButton_3)
-        self.pushButton_3.setVisible(False)
+        self.grid_layout_hough.addWidget(self.pushButton, 3, 0, 1, 2)
+        self.grid_layout_hough.addWidget(self.pushButton_2, 4, 0, 1, 2)
+        self.grid_layout_harris.addWidget(self.pushButton, 3, 0, 1, 2)
+        self.grid_layout_harris.addWidget(self.pushButton_2, 4, 0, 1, 2)
+        
+        # Add initial layout (Canny)
         self.central_layout.addLayout(self.grid_layout)
-
-        # Set the central widget
-        MainWindow.setCentralWidget(self.centralwidget)
-
-        # Create menu bar and add menu items for different programs
+        
+        # Add menus
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         MainWindow.setMenuBar(self.menubar)
         self.programs_menu = self.menubar.addMenu("Programs")
-
+        
         # Create actions for menu items
         self.action_canny = QtWidgets.QAction("Canny Edge Detection", MainWindow)
         self.action_hough = QtWidgets.QAction("Hough Line Detection", MainWindow)
-    
-
+        self.action_harris = QtWidgets.QAction("Harris Corner Detection", MainWindow)
+        
         # Add actions to the programs menu
         self.programs_menu.addAction(self.action_canny)
         self.programs_menu.addAction(self.action_hough)
+        self.programs_menu.addAction(self.action_harris)
         
+        # Connect actions to functions
         self.action_canny.triggered.connect(self.show_canny_parameters)
         self.action_hough.triggered.connect(self.show_hough_parameters)
-
-        # Set status bar
+        self.action_harris.triggered.connect(self.show_harris_parameters)
+        
+        # Status bar
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         MainWindow.setStatusBar(self.statusbar)
-
+        
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -127,6 +138,7 @@ class Ui_MainWindow(object):
         self.programs_menu.setTitle(_translate("MainWindow", "Programs"))
         self.action_canny.setText(_translate("MainWindow", "Canny Edge Detection"))
         self.action_hough.setText(_translate("MainWindow", "Hough Line Detection"))
+        self.action_harris.setText(_translate("MainWindow", "Harris Corner Detection"))
         self.kernelLabel.setText(_translate("MainWindow", "Kernel:"))
         self.lowThresholdLabel.setText(_translate("MainWindow", "Low Threshold:"))
         self.highThresholdLabel.setText(_translate("MainWindow", "High Threshold:"))
@@ -134,6 +146,9 @@ class Ui_MainWindow(object):
         self.rhosLabel.setText(_translate("MainWindow", "Rhos:"))
         self.thetasLabel.setText(_translate("MainWindow", "Thetas:"))
         self.thresholdRatioLabel.setText(_translate("MainWindow", "Threshold Ratio:"))
+        self.alphaLabel.setText(_translate("MainWindow", "Alpha:"))
+        self.kLabel.setText(_translate("MainWindow", "k:"))
+        self.windowSizeLabel.setText(_translate("MainWindow", "Window Size:"))
 
 
     def display_initial_image(self, image_data):
@@ -173,7 +188,7 @@ class Ui_MainWindow(object):
 
 
     def show_canny_parameters(self):
-        # Remove Hough line detection parameters and add Canny edge detection parameters
+        # Remove Hough line detection parameters and add Canny edge detection parameters 
         self.central_layout.removeItem(self.grid_layout_hough)
         self.central_layout.addLayout(self.grid_layout)
         self.kernelLabel.setVisible(True)
@@ -192,6 +207,12 @@ class Ui_MainWindow(object):
         self.thetasLineEdit.setVisible(False)
         self.thresholdRatioLabel.setVisible(False)
         self.thresholdRatioLineEdit.setVisible(False)
+        self.alphaLabel.setVisible(False)
+        self.alphaLineEdit.setVisible(False)
+        self.kLabel.setVisible(False)
+        self.kLineEdit.setVisible(False)
+        self.windowSizeLabel.setVisible(False)
+        self.windowSizeLineEdit.setVisible(False)
             
 
     def show_hough_parameters(self):
@@ -206,7 +227,7 @@ class Ui_MainWindow(object):
         self.central_layout.addWidget(self.pushButton)
         self.central_layout.addWidget(self.pushButton_2)
 
-        # Hide widgets for Canny edge detection parameters
+        # Hide widgets for Canny edge detection parameters & Harris corner detection parameters
         self.kernelLabel.setVisible(False)
         self.kernelLineEdit.setVisible(False)
         self.lowThresholdLabel.setVisible(False)
@@ -216,6 +237,12 @@ class Ui_MainWindow(object):
         self.sigmaLabel.setVisible(False)
         self.sigmaLineEdit.setVisible(False)
         self.pushButton.setVisible(False)
+        self.alphaLabel.setVisible(False)
+        self.alphaLineEdit.setVisible(False)
+        self.kLabel.setVisible(False)
+        self.kLineEdit.setVisible(False)
+        self.windowSizeLabel.setVisible(False)
+        self.windowSizeLineEdit.setVisible(False)
 
         # Show widgets for Hough line detection parameters
         self.rhosLabel.setVisible(True)
@@ -226,7 +253,43 @@ class Ui_MainWindow(object):
         self.thresholdRatioLineEdit.setVisible(True)
         self.pushButton_3.setVisible(True)
         
-       
+    def show_harris_parameters(self):
+        # Remove Apply and Browse Image buttons from the grid layout
+        self.grid_layout.removeWidget(self.pushButton)
+        self.grid_layout.removeWidget(self.pushButton_2)
+
+        # Add Harris corner detection parameters layout
+        self.central_layout.addLayout(self.grid_layout_harris)
+
+        # Add Apply and Browse Image buttons below the input fields
+        self.central_layout.addWidget(self.pushButton)
+        self.central_layout.addWidget(self.pushButton_2)
+
+        # Hide widgets for Canny edge detection parameters & Hough line detection parameters
+        self.kernelLabel.setVisible(False)
+        self.kernelLineEdit.setVisible(False)
+        self.lowThresholdLabel.setVisible(False)
+        self.lowThresholdLineEdit.setVisible(False)
+        self.highThresholdLabel.setVisible(False)
+        self.highThresholdLineEdit.setVisible(False)
+        self.sigmaLabel.setVisible(False)
+        self.sigmaLineEdit.setVisible(False)
+        self.pushButton.setVisible(False)
+        self.rhosLabel.setVisible(False)
+        self.rhosLineEdit.setVisible(False)
+        self.thetasLabel.setVisible(False)
+        self.thetasLineEdit.setVisible(False)
+        self.thresholdRatioLabel.setVisible(False)
+        self.thresholdRatioLineEdit.setVisible(False)
+
+        # Show widgets for Harris corner detection parameters
+        self.alphaLabel.setVisible(True)
+        self.alphaLineEdit.setVisible(True)
+        self.kLabel.setVisible(True)
+        self.kLineEdit.setVisible(True)
+        self.windowSizeLabel.setVisible(True)
+        self.windowSizeLineEdit.setVisible(True)
+        self.pushButton_3.setVisible(True)   
         
 if __name__ == "__main__":
     import sys

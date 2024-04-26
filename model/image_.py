@@ -118,7 +118,7 @@ class Image:
 
         return accumulator, thetas, rhos
 
-    def detect_lines(accumulator, thetas, rhos, threshold):
+    def detect_lines(self, accumulator, thetas, rhos, threshold):
         lines = []
         for rho_idx in range(accumulator.shape[0]):
             for theta_idx in range(accumulator.shape[1]):
@@ -130,11 +130,11 @@ class Image:
 
 
 
-    def plot_detected_lines(image, accumulator, rhos, thetas, threshold_ratio=0.5):
+    def plot_detected_lines(self, image, accumulator, rhos, thetas, threshold_ratio=0.5):
         # Set a dynamic threshold based on the max value in the accumulator
         threshold = threshold_ratio * accumulator.max()
 
-        lines = detect_lines(accumulator, thetas, rhos, threshold)
+        lines = self.detect_lines(accumulator, thetas, rhos, threshold)
 
         # Create a copy of the image to draw lines on
         line_image = np.copy(image)
@@ -171,7 +171,56 @@ class Image:
         plt.tight_layout()
         plt.show()
                         
-        
+    def calculate_Ix_Iy(self):
+        Ix = cv2.Sobel(self.data, cv2.CV_64F, 1, 0, ksize=3)
+        Iy = cv2.Sobel(self.data, cv2.CV_64F, 0, 1, ksize=3)
+        return Ix, Iy 
+    
+    def calculate_Ixx_Iyy_Ixy(self, Ix, Iy):
+        Ixx = Ix**2
+        Iyy = Iy**2
+        Ixy = Ix * Iy
+        return Ixx, Iyy, Ixy
+    
+    def calculate_matrix_M(self, Ixx, Iyy, Ixy, window_size=3, k=0.04):
+        offset = window_size // 2
+        height, width = self.data.shape
+        R = np.zeros_like(self.data, dtype=np.float32)
+        for y in range(offset, height - offset):
+            for x in range(offset, width - offset):
+                Sxx = np.sum(Ixx[y - offset:y + offset + 1, x - offset:x + offset + 1])
+                Syy = np.sum(Iyy[y - offset:y + offset + 1, x - offset:x + offset + 1])
+                Sxy = np.sum(Ixy[y - offset:y + offset + 1, x - offset:x + offset + 1])
+                det = Sxx * Syy - Sxy**2
+                trace = Sxx + Syy
+                R[y, x] = det - k * (trace**2)
+        return R
+
+    def harris_corner_detection(self, R, alpha=0.01, window_size=3):
+        offset = window_size // 2
+        height, width = self.data.shape
+        threshold = alpha * R.max()
+        corner_list = []
+        for y in range(offset, height - offset):
+            for x in range(offset, width - offset):
+                value = R[y, x]
+                if value > threshold:
+                    corner_list.append([x, y, value])
+        return corner_list
+
+    def draw_corners(self, corner_list):
+        for corner in corner_list:
+            cv2.circle(self.data, (corner[0], corner[1]), 4, (0, 255, 0), -1)
+        return self.data
+
+    def harris_corner_detection_main(self, window_size=3, k=0.04, alpha=0.01):
+        self.convert_to_gray()  # Convert to grayscale if necessary
+        Ix, Iy = self.calculate_Ix_Iy()
+        Ixx, Iyy, Ixy = self.calculate_Ixx_Iyy_Ixy(Ix, Iy)
+        R = self.calculate_matrix_M(Ixx, Iyy, Ixy, window_size, k)
+        corner_list = self.harris_corner_detection(R, alpha, window_size)
+        img_with_corners = self.draw_corners(corner_list)
+        return img_with_corners
 
 
     

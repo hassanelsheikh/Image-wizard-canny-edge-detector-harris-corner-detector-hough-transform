@@ -102,10 +102,9 @@ class Controller:
             return
         
     def apply_hough_transform(self):
-        //TODO CHANge
-    # Call the Hough transform method and plot detected lines
+       # Call the Hough transform method and plot detected lines
         try:
-         self.image.copyImage = self.processor.rgb_to_grayscale(self.image.data)
+         gray_image = self.processor.rgb_to_grayscale(self.image.data)
 
      # Perform edge detection
          edges = self.image.edge_detection(threshold=self.high_threshold)
