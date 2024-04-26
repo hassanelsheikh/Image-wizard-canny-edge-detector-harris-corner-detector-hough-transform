@@ -36,3 +36,10 @@ class imageProcessor:
 
      # Plot detected lines using the ImageProcessor class
       self.image_processor.plot_detected_lines(gray_image, accumulator, rhos, thetas, self.threshold_ratio)           
+
+    def apply_harris_transform(self, image, window_size, k, threshold):
+
+      # Step 2: Compute the Harris corner response
+      image.copyImage =  image.harrisCornerDetection(k, threshold, window_size)
+
+      return image.copyImage

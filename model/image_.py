@@ -37,8 +37,6 @@ class Image:
         kernel = np.ones((kernel_size, kernel_size), np.float32) / kernel_size**2
         kernel /= kernel_size**2
         self.copyImage = cv2.GaussianBlur(self.copyImage, (kernel_size, kernel_size), sigma)
-        
-
         # Convolve the image with the kernel
         self.copyImage = cv2.filter2D(self.copyImage, -1, kernel)
 
@@ -98,79 +96,41 @@ class Image:
                         self.copyImage[i, j] = 0
 
 
-    def hough_transform(image, theta_res=1, rho_res=1):
-        height, width = image.shape
-        max_rho = int(np.sqrt(height*2 + width*2))
-        rhos = np.arange(-max_rho, max_rho, rho_res)
-        thetas = np.deg2rad(np.arange(-90, 90, theta_res))
+    
+    def harrisCornerDetection(self, k, threshold, window_size):
+        img_gray = cv2.cvtColor(self.data, cv2.COLOR_BGR2GRAY)
+        Ix = cv2.Sobel(img_gray, cv2.CV_64F, 1, 0, ksize=3)
+        Iy = cv2.Sobel(img_gray, cv2.CV_64F, 0, 1, ksize=3)
+        Ixx = Ix ** 2
+        Iyy = Iy ** 2
+        Ixy = Ix * Iy
 
-        accumulator = np.zeros((len(rhos), len(thetas)), dtype=np.uint64)
+        height, width = img_gray.shape
+        offset = window_size // 2
+        R = np.zeros_like(img_gray, dtype=np.float32)
 
-        y_idxs, x_idxs = np.nonzero(image)  # Get coordinates of non-zero values (edge points)
+        for y in range(offset, height-offset):
+            for x in range(offset, width-offset):
+                Sxx = np.sum(Ixx[y-offset:y+offset+1, x-offset:x+offset+1])
+                Syy = np.sum(Iyy[y-offset:y+offset+1, x-offset:x+offset+1])
+                Sxy = np.sum(Ixy[y-offset:y+offset+1, x-offset:x+offset+1])
+                det = Sxx*Syy - Sxy ** 2
+                trace = Sxx + Syy
+                R[y, x] = det - k*(trace**2)
 
-        for i in range(len(x_idxs)):
-            x = x_idxs[i]
-            y = y_idxs[i]
+        # Thresholding the corner response function
+        corner_points = np.where(R > threshold * R.max())
 
-            for j in range(len(thetas)):
-                rho = int((x * np.cos(thetas[j]) + y * np.sin(thetas[j])) / rho_res) + max_rho
-                accumulator[rho, j] += 1
+        # Create a copy of the image to draw circles on
+        img_with_corners = self.data.copy()
 
-        return accumulator, thetas, rhos
+        # Draw circles on the image at detected corner points
+        for y, x in zip(*corner_points):
+            cv2.circle(img_with_corners, (x, y), 4, (0, 255, 0), -1)  # -1 for filled circle
 
-    def detect_lines(accumulator, thetas, rhos, threshold):
-        lines = []
-        for rho_idx in range(accumulator.shape[0]):
-            for theta_idx in range(accumulator.shape[1]):
-                if accumulator[rho_idx, theta_idx] > threshold:
-                    rho = rhos[rho_idx]
-                    theta = thetas[theta_idx]
-                    lines.append((rho, theta))
-        return lines
-
-
-
-    def plot_detected_lines(image, accumulator, rhos, thetas, threshold_ratio=0.5):
-        # Set a dynamic threshold based on the max value in the accumulator
-        threshold = threshold_ratio * accumulator.max()
-
-        lines = detect_lines(accumulator, thetas, rhos, threshold)
-
-        # Create a copy of the image to draw lines on
-        line_image = np.copy(image)
-
-        print(f"Threshold: {threshold}")
-        print("Detected lines (rho, theta):")
-
-        # Plot the lines on the copy of the image
-        for rho, theta in lines:
-            print(f"({rho}, {theta})")  # Debug print statement
-            a = np.cos(theta)
-            b = np.sin(theta)
-            x0 = a * rho
-            y0 = b * rho
-            x1 = int(x0 + 1000 * (-b))
-            y1 = int(y0 + 1000 * (a))
-            x2 = int(x0 - 1000 * (-b))
-            y2 = int(y0 - 1000 * (a))
-
-            print(f"Line endpoints: ({x1}, {y1}), ({x2}, {y2})")  # Debug print statement
-
-            # Draw lines on the image copy
-            plt.plot((x1, x2), (y1, y2), 'red', linewidth=2)
-            
-        fig, axes = plt.subplots(1, 2, figsize=(15, 15))
-        axes[0].imshow(image, cmap='gray')
-        axes[0].set_title('Input Image')
-        axes[0].axis('off')
-
-        axes[1].imshow(line_image, cmap='gray')
-        axes[1].set_title('Detected Lines')
-        axes[1].axis('off')
-
-        plt.tight_layout()
-        plt.show()
-                        
+        # Return the copy of the image with detected corners
+        return img_with_corners
+                       
         
 
 

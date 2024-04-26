@@ -17,6 +17,7 @@ class Controller:
         # Connect signals to slots
         self.ui.pushButton.clicked.connect(self.apply_canny)
         self.ui.pushButton_2.clicked.connect(self.browse_image)
+        self.ui.pushButton_4.clicked.connect(self.apply_harris_transform)
 
        # Connect input fields to slots
         self.ui.kernelLineEdit.textChanged.connect(self.update_kernel)
@@ -29,6 +30,11 @@ class Controller:
         self.ui.thetasLineEdit.textChanged.connect(self.update_theta_res)
         self.ui.thresholdRatioLineEdit.textChanged.connect(self.update_threshold_ratio)
         self.ui.pushButton_3.clicked.connect(self.apply_hough_transform)
+
+        # Connect Harris corner detection parameters to slots
+        self.ui.windowSizeLineEdit.textChanged.connect(self.update_window_size)
+        self.ui.k_valueLineEdit.textChanged.connect(self.update_k)
+        self.ui.thresholdLineEdit.textChanged.connect(self.update_threshold)
 
         
 
@@ -88,6 +94,27 @@ class Controller:
         except ValueError as e:
             print("Error: ", e)
             return
+        
+    def update_window_size(self, text):
+        try:
+            self.window_size = int(text)
+        except ValueError as e:
+            print("Error: ", e)
+            return
+        
+    def update_k(self, text):
+        try:
+            self.k = float(text)
+        except ValueError as e:
+            print("Error: ", e)
+            return
+        
+    def update_threshold(self, text):
+        try:
+            self.threshold = float(text)
+        except ValueError as e:
+            print("Error: ", e)
+            return
     
 
     def apply_canny(self):
@@ -96,13 +123,23 @@ class Controller:
         try:
             self.image.copyImage = self.processor.apply_canny(self.image, self.kernel_size, self.sigma, self.low_threshold, self.high_threshold)
             print("Canny edge detector applied")
-            self.ui.display_result_image(self.image.copyImage)
+            self.ui.display_result_image(self.image.copyImage, "gray")
+        except AttributeError as e:
+            print("Error: ", e)
+            return
+        
+    def apply_harris_transform(self):
+        # Reset the copy image
+        self.image.copyImage = self.image.data.copy()
+        try:
+            self.image.copyImage = self.processor.apply_harris_transform(self.image, self.window_size, self.k, self.threshold)
+            print("Harris corner detector applied")
+            self.ui.display_result_image(self.image.copyImage, "rgb")
         except AttributeError as e:
             print("Error: ", e)
             return
         
     def apply_hough_transform(self):
-        //TODO CHANge
     # Call the Hough transform method and plot detected lines
         try:
          self.image.copyImage = self.processor.rgb_to_grayscale(self.image.data)
@@ -119,4 +156,6 @@ class Controller:
         except AttributeError as e:
             print("Error: ", e)
             return
+        
+    
         
