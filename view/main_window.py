@@ -77,13 +77,19 @@ class Ui_MainWindow(object):
         # Add buttons to the grid layout
         self.pushButton = QtWidgets.QPushButton("Apply")
         self.pushButton_2 = QtWidgets.QPushButton("Browse Image")
+        self.pushButton_3 = QtWidgets.QPushButton("Apply") 
 
         # Add the Apply button in the next row after the sigma input box
         self.grid_layout.addWidget(self.pushButton, 4, 0, 1, 2)
 
         # Add the Browse Image button in the next row after the sigma input box
         self.grid_layout.addWidget(self.pushButton_2, 5, 0, 1, 2)
-        # Add grid layout to the central layout
+
+        self.grid_layout.addWidget(self.pushButton_2, 5, 0, 1, 2)
+
+# Add Apply button for Hough Transform below the input fields
+        self.central_layout.addWidget(self.pushButton_3)
+        self.pushButton_3.setVisible(False)
         self.central_layout.addLayout(self.grid_layout)
 
         # Set the central widget
@@ -209,6 +215,7 @@ class Ui_MainWindow(object):
         self.highThresholdLineEdit.setVisible(False)
         self.sigmaLabel.setVisible(False)
         self.sigmaLineEdit.setVisible(False)
+        self.pushButton.setVisible(False)
 
         # Show widgets for Hough line detection parameters
         self.rhosLabel.setVisible(True)
@@ -217,6 +224,7 @@ class Ui_MainWindow(object):
         self.thetasLineEdit.setVisible(True)
         self.thresholdRatioLabel.setVisible(True)
         self.thresholdRatioLineEdit.setVisible(True)
+        self.pushButton_3.setVisible(True)
         
        
         

@@ -24,6 +24,14 @@ class Controller:
         self.ui.highThresholdLineEdit.textChanged.connect(self.update_high_threshold) 
         self.ui.sigmaLineEdit.textChanged.connect(self.update_sigma)     
 
+        # Connect Hough line detection parameters to slots
+        self.ui.rhosLineEdit.textChanged.connect(self.update_rho_res)
+        self.ui.thetasLineEdit.textChanged.connect(self.update_theta_res)
+        self.ui.thresholdRatioLineEdit.textChanged.connect(self.update_threshold_ratio)
+        self.ui.pushButton_3.clicked.connect(self.apply_hough_transform)
+
+        
+
     def browse_image(self):
         path = QtWidgets.QFileDialog.getOpenFileName(None, 'Open file', '', 'Image files (*.jpg *.png)')[0]
         self.image.read(path)
@@ -59,6 +67,28 @@ class Controller:
         except ValueError as e:
             print("Error: ", e)
             return
+        
+    def update_theta_res(self, text):
+        try:
+            self.theta_res = int(text)
+        except ValueError as e:
+            print("Error: ", e)
+            return
+        
+    def update_rho_res(self, text):
+        try:
+            self.rho_res = int(text)
+        except ValueError as e:
+            print("Error: ", e)
+            return
+    
+    def update_threshold_ratio(self, text):
+        try:
+            self.threshold_ratio = int(text)
+        except ValueError as e:
+            print("Error: ", e)
+            return
+    
 
     def apply_canny(self):
         # Reset the copy image
@@ -72,9 +102,10 @@ class Controller:
             return
         
     def apply_hough_transform(self):
+        //TODO CHANge
     # Call the Hough transform method and plot detected lines
         try:
-         gray_image = self.image_processor.rgb_to_grayscale(self.image.data)
+         self.image.copyImage = self.processor.rgb_to_grayscale(self.image.data)
 
      # Perform edge detection
          edges = self.image.edge_detection(threshold=self.high_threshold)
