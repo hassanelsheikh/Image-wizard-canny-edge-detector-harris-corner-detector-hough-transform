@@ -76,21 +76,21 @@ class Controller:
         
     def update_theta_res(self, text):
         try:
-            self.theta_res = int(text)
+            self.theta_res = float(text)
         except ValueError as e:
             print("Error: ", e)
             return
         
     def update_rho_res(self, text):
         try:
-            self.rho_res = int(text)
+            self.rho_res = float(text)
         except ValueError as e:
             print("Error: ", e)
             return
     
     def update_threshold_ratio(self, text):
         try:
-            self.threshold_ratio = int(text)
+            self.threshold_ratio = float(text)
         except ValueError as e:
             print("Error: ", e)
             return
@@ -140,22 +140,13 @@ class Controller:
             return
         
     def apply_hough_transform(self):
-    # Call the Hough transform method and plot detected lines
+        # Reset the copy image
+        self.image.copyImage = self.image.data.copy()
         try:
-         self.image.copyImage = self.processor.rgb_to_grayscale(self.image.data)
-
-     # Perform edge detection
-         edges = self.image.edge_detection(threshold=self.high_threshold)
-
-     # Perform Hough transform and detect lines
-         accumulator, thetas, rhos = self.image.hough_transform(edges, self.theta_res, self.rho_res)
-
-     # Plot detected lines using the ImageProcessor class
-         self.image_processor.plot_detected_lines(gray_image, accumulator, rhos, thetas, self.threshold_ratio)
-         
+            self.image.copyImage = self.processor.apply_hough_transform(self.image, self.threshold_ratio, self.theta_res, self.rho_res)
+            print("Hough line detector applied")
+            self.ui.display_result_image(self.image.copyImage, "rgb")
         except AttributeError as e:
             print("Error: ", e)
             return
-        
-    
         

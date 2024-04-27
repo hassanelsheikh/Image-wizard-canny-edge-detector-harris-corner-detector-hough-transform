@@ -32,13 +32,36 @@ class Image:
     def convertToGray(self):
         self.copyImage = cv2.cvtColor(self.copyImage, cv2.COLOR_BGR2GRAY)
 
+
+        # def gaussianBlur(self, kernel_size, sigma):
+        # # Generate Gaussian kernel
+        # kernel = np.ones((kernel_size, kernel_size), np.float32) / kernel_size**2
+        # kernel /= kernel_size**2
+        # self.copyImage = cv2.GaussianBlur(self.copyImage, (kernel_size, kernel_size), sigma)
+        # # Convolve the image with the kernel
+        # self.copyImage = cv2.filter2D(self.copyImage, -1, kernel)
     def gaussianBlur(self, kernel_size, sigma):
         # Generate Gaussian kernel
-        kernel = np.ones((kernel_size, kernel_size), np.float32) / kernel_size**2
-        kernel /= kernel_size**2
-        self.copyImage = cv2.GaussianBlur(self.copyImage, (kernel_size, kernel_size), sigma)
+        kernel = self.createGaussianKernel(kernel_size, sigma)
         # Convolve the image with the kernel
         self.copyImage = cv2.filter2D(self.copyImage, -1, kernel)
+        
+
+    def createGaussianKernel(self, kernel_size, sigma):
+        kernel = np.zeros((kernel_size, kernel_size), np.float32)
+        center = kernel_size // 2
+
+        total_sum = 0
+        for i in range(kernel_size):
+            for j in range(kernel_size):
+                x = i - center
+                y = j - center
+                kernel[i, j] = np.exp(-(x**2 + y**2) / (2 * sigma**2))
+                total_sum += kernel[i, j]
+
+        # Normalize the kernel
+        kernel /= total_sum
+        return kernel
 
     def gradientIntensity(self):
         # Sobel kernels
@@ -130,7 +153,74 @@ class Image:
 
         # Return the copy of the image with detected corners
         return img_with_corners
-                       
+    
+    
+    def hough_transform(self, edges, threshhold, theta_res, rho_res):
+        
+        height, width = edges.shape
+        img_diagonal = np.ceil(np.sqrt(height ** 2 + width ** 2))
+        max_rho = int(np.ceil(img_diagonal / rho_res)) * rho_res
+
+        #define parameters space for rho and theta
+        rhos = np.arange(-max_rho, max_rho + 1, rho_res)
+        thetas = np.deg2rad(np.arange(-90, 90, theta_res))
+        
+       # Create am empty hough accumulator
+        accumulator = np.zeros((len(rhos), len(thetas)), dtype=np.uint64)
+
+        # Iterate through all edge points in the image
+        y_idxs, x_idxs = np.nonzero(edges)
+        for i in range(len(x_idxs)):
+            x = x_idxs[i]
+            y = y_idxs[i]
+
+            # Vote in the Hough accumulator
+            for j in range(len(thetas)):
+                rho = x * np.cos(thetas[j]) + y * np.sin(thetas[j])
+                rho_idx = int(np.round((rho + max_rho) / rho_res))
+                accumulator[rho_idx, j] += 1
+
+        # Apply thresholding
+        accumulator[accumulator < threshhold] = 0
+        print("AMIGO")
+        
+        # Find indices of non-zero values in the accumulator
+        rho_idxs, theta_idxs = np.nonzero(accumulator)
+        rhos_detected = rhos[rho_idxs]
+        thetas_detected = thetas[theta_idxs]
+
+        # Combine rho and theta values into a single list
+        detected_lines = list(zip(rhos_detected, thetas_detected))
+
+        return detected_lines
+
+       
+
+    def plot_detected_lines(self, lines):
+        # Convert the image to RGB
+        if len(self.copyImage.shape) == 2:
+            print("HOOLAA")
+            self.copyImage = cv2.cvtColor(self.copyImage, cv2.COLOR_GRAY2RGB)
+        
+        # Create an empty image to draw lines on
+        line_image = np.zeros_like(self.copyImage)
+
+        # Iterate through detected lines
+        if lines is not None:
+            for rho, theta in lines:
+                a = np.cos(theta)
+                b = np.sin(theta)
+                x0 = a * rho
+                y0 = b * rho
+                x1 = int(x0 + 1000 * (-b))
+                y1 = int(y0 + 1000 * (a))
+                x2 = int(x0 - 1000 * (-b))
+                y2 = int(y0 - 1000 * (a))
+                cv2.line(line_image, (x1, y1), (x2, y2), (0, 0, 255), 5)
+
+        # Overlay the lines on the original image
+        self.copyImage = cv2.addWeighted(self.copyImage, 0.8, line_image, 1, 0)
+        
         
 
 
