@@ -24,4 +24,29 @@ class imageProcessor:
 
         return image.copyImage
 
-               
+    def apply_harris_transform(self, image, window_size, k, threshold):
+
+      # Step 2: Compute the Harris corner response
+      image.copyImage =  image.harrisCornerDetection(k, threshold, window_size)
+
+      return image.copyImage
+    
+    def apply_hough_transform(self, image, threshhold, theta_res, rho_res):
+        # Step 1: Convert image to grayscale
+        image.convertToGray()
+
+        # Step 2: Apply Gaussian blur
+        image.copyImage = cv2.GaussianBlur(image.copyImage, (5, 5), 0)
+
+        # Step 3: Perform edge detection
+        edges = cv2.Canny(image.copyImage, 50, 150)
+
+        lines = image.hough_transform(edges, threshhold, theta_res, rho_res)
+
+        image.plot_detected_lines(lines)
+
+        return image.copyImage
+
+
+        
+
